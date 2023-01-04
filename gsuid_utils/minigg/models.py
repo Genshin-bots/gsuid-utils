@@ -5,13 +5,19 @@ MiniGG API 响应模型。
 from __future__ import annotations
 
 import sys
-from typing import TypeAlias, TypedDict
+from typing import TypedDict
 
 # https://peps.python.org/pep-0655/#usage-in-python-3-11
 if sys.version_info >= (3, 11):
     from typing import NotRequired
 else:
     from typing_extensions import NotRequired
+
+# https://peps.python.org/pep-0613
+if sys.version_info >= (3, 10):
+    from typing import TypeAlias
+else:
+    from typing_extensions import TypeAlias
 
 R: TypeAlias = list[str]
 
