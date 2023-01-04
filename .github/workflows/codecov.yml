@@ -1,0 +1,46 @@
+name: Unittest
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  test:
+    name: Coverage
+    strategy:
+      matrix:
+        version: ["3.8", "3.9", "3.10", "3.11"]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      OS: ${{ matrix.os }}
+      PYTHON_VERSION: ${{ matrix.python-version }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install poetry
+        run: pipx install poetry
+        shell: bash
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.version }}
+          architecture: "x64"
+          cache: "poetry"
+
+      - name: Install dependencies
+        run: poetry install --with test --without dev
+        shell: bash
+
+      - name: Run Pytest
+        run: poetry run pytest -n auto --cov-report xml
+
+      - name: Upload report
+        uses: codecov/codecov-action@v3
+        with:
+          env_vars: OS,PYTHON_VERSION
+          files: ./coverage.xml
+          flags: unittests
