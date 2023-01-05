@@ -5,7 +5,7 @@ MiniGG API 响应模型。
 from __future__ import annotations
 
 import sys
-from typing import TypedDict
+from typing import List, TypedDict
 
 # https://peps.python.org/pep-0655/#usage-in-python-3-11
 if sys.version_info >= (3, 11):
@@ -19,7 +19,7 @@ if sys.version_info >= (3, 10):
 else:
     from typing_extensions import TypeAlias
 
-R: TypeAlias = list[str]
+R: TypeAlias = List[str]
 
 
 class FandomUrl(TypedDict):
