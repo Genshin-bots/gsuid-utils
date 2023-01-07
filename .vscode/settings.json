@@ -9,6 +9,7 @@
     "genshinuid",
     "gsuid",
     "Kimigaii",
+    "microgg",
     "MINIGG",
     "Wuyi"
   ],
@@ -22,6 +23,5 @@
   "python.linting.flake8CategorySeverity.W": "Warning",
   "python.linting.flake8CategorySeverity.F": "Warning",
   "python.linting.flake8CategorySeverity.E": "Warning",
-  "python.analysis.inlayHints.variableTypes": true,
   "python.analysis.inlayHints.functionReturnTypes": true
 }
