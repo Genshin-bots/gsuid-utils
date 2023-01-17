@@ -1,5 +1,5 @@
-from typing import Union, Tuple
 from enum import Enum
+from typing import Tuple, Union
 
 from PIL import ImageColor
 
@@ -74,7 +74,10 @@ class Color(tuple):
     def to(self):
         return ConvertableColor(self)
 
-    def __new__(cls, _color: Union[str, Tuple[int, int, int], Tuple[int, int, int, int]]):
+    def __new__(
+        cls,
+        _color: Union[str, Tuple[int, int, int], Tuple[int, int, int, int]],
+    ):
         assert check_if_color(_color)
         if isinstance(_color, str):
             _color = ImageColor.getrgb(_color)
@@ -108,5 +111,7 @@ def check_if_color(color: Union[str, tuple]):
 if __name__ == '__main__':
     red = Color((1, 1, 1))
     print(f'HEX: {red.to.hex}\nHSV: {red.to.hsv}\nRGB: {red.to.rgb}')
-    print(f'rgb(123, 23, -1): {check_if_color("rgb(123, 23, -1)")}\n(100, 200, 255): {check_if_color((100, 200, 256))}')
+    print(
+        f'rgb(123, 23, -1): {check_if_color("rgb(123, 23, -1)")}\n(100, 200, 255): {check_if_color((100, 200, 256))}'
+    )
     print(check_if_color('#ff0000'))
