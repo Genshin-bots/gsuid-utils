@@ -1,7 +1,7 @@
-from typing import Union
+from typing import Union, Tuple
 
-from PIL import Image, ImageDraw
 from color import Color, check_if_color
+from PIL import Image, ImageDraw
 
 
 class BaseTextContainer(list):
@@ -20,13 +20,17 @@ class BaseTextContainer(list):
 
 
 class ColorText:
+
     def _set_color(self, color):
         self.color = Color(color)
 
     def __init__(self, text: str, color: Union[str, tuple] = 'black'):
         self._check_color = check_if_color
         if not self._check_color(color):
-            print(f'Color: {color}\n' f'Type: {str(type(color))}')
+            print(
+                f'Color: {color}\n'
+                f'Type: {str(type(color))}'
+            )
 
         # assert self._check_color(color)
         self._set_color(color)
@@ -74,17 +78,12 @@ class TextBuffer(BaseTextContainer):
         return self.max_length - self.len
 
 
-def split_ep(
-    text: Union[str, ColorText], length: int, pre_len: int = 0
-):  # Cut strings by length but discard the first N characters
-    return text[:pre_len], [
-        text[i : i + length] for i in range(pre_len, len(text), length)
-    ]
+def split_ep(text: Union[str, ColorText], length: int,
+             pre_len: int = 0):  # Cut strings by length but discard the first N characters
+    return text[:pre_len], [text[i:i + length] for i in range(pre_len, len(text), length)]
 
 
-def split_ctg(
-    group: Union[list, ColorTextGroup], length: int
-) -> list:  # Cut strings from ColorTextGroup
+def split_ctg(group: Union[list, ColorTextGroup], length: int) -> list:  # Cut strings from ColorTextGroup
     result = []
     buffer = TextBuffer([], length)
 
@@ -112,31 +111,19 @@ def split_ctg(
 
 
 if __name__ == "__main__":
-    from pprint import pformat
-
+    from pprint import pprint, pformat
     from colorama import Fore, Style
 
+
     def test_ctg(length: int, *params):
-        print(
-            f"{Fore.GREEN}> running split_ctg(){Style.RESET_ALL}\n    length: {length}\n    texts: {params}"
-        )
+        print(f"{Fore.GREEN}> running split_ctg(){Style.RESET_ALL}\n    length: {length}\n    texts: {params}")
         groups_ = ColorTextGroup(list(params))
         f_ = pformat(split_ctg(groups_, length)).split('\n')
         print(Fore.CYAN, '\t', f_[0], '\n\t'.join(f_[0:]))
 
+
     print('*** ColorTextGroup cutting test ***')
-    test_ctg(
-        5,
-        'test',
-        ColorText('i am red', 'red'),
-        'foo',
-        ColorText('bar', color='cyan'),
-    )
-    test_ctg(
-        10,
-        '获得',
-        ColorText('12%/15%/18%/21%/24%', color='rgb(69,113,236)'),
-        '所有元素伤害加成；队伍中附近的其他角色在施放元素战技时，会为装备该武器的角色产生1层「波穗」效果，至多叠加2层，每0.3秒最多触发1次。装备该武器的角色施放元素战技时，如果有积累的「波穗」效果，则将消耗已有的「波穗」，获得「波乱」：根据消耗的层数，每层提升',
-        ColorText('20%/25%/30%/35%/40%', (69, 113, 236)),
-        '普通攻击伤害，持续8秒。',
-    )
+    test_ctg(5, 'test', ColorText('i am red', 'red'), 'foo', ColorText('bar', color='cyan'))
+    test_ctg(10, '获得', ColorText('12%/15%/18%/21%/24%', color='rgb(69,113,236)'),
+             '所有元素伤害加成；队伍中附近的其他角色在施放元素战技时，会为装备该武器的角色产生1层「波穗」效果，至多叠加2层，每0.3秒最多触发1次。装备该武器的角色施放元素战技时，如果有积累的「波穗」效果，则将消耗已有的「波穗」，获得「波乱」：根据消耗的层数，每层提升',
+             ColorText('20%/25%/30%/35%/40%', (69, 113, 236)), '普通攻击伤害，持续8秒。')
