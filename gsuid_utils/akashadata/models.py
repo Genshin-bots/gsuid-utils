@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, TypedDict
+from typing import TypedDict
 
 
 class TeamListItem(TypedDict):
@@ -11,7 +11,7 @@ class TeamListItem(TypedDict):
     ud: str
     umr: str
     dmr: str
-    tl: List[int]
+    tl: list[int]
 
 
 class AbyssTotalView(TypedDict):
@@ -37,14 +37,14 @@ class LastRate(TypedDict):
 
 class MaxstarPlayerData(TypedDict):
     title: str
-    y_list: List[str]
-    x_list: List[str]
+    y_list: list[str]
+    x_list: list[str]
 
 
 class PassPlayerData(TypedDict):
     title: str
-    y_list: List[str]
-    x_list: List[str]
+    y_list: list[str]
+    x_list: list[str]
 
 
 class PlayerLevelData(TypedDict):
@@ -53,8 +53,8 @@ class PlayerLevelData(TypedDict):
 
 
 class PalyerCountLevelData(TypedDict):
-    player_count_data: List[int]
-    level_data: List[str]
+    player_count_data: list[int]
+    level_data: list[str]
 
 
 class LevelData(TypedDict):
@@ -79,10 +79,10 @@ class AkashaAbyssData(TypedDict):
     schedule_id: int
     modify_time: str
     schedule_version_desc: str
-    team_list: List[TeamListItem]
-    team_up_list: List[TeamListItem]
-    team_down_list: List[TeamListItem]
+    team_list: list[TeamListItem]
+    team_up_list: list[TeamListItem]
+    team_down_list: list[TeamListItem]
     abyss_total_view: AbyssTotalView
     last_rate: LastRate
     level_data: LevelData
-    character_used_list: List[CharacterUsedListItem]
+    character_used_list: list[CharacterUsedListItem]
