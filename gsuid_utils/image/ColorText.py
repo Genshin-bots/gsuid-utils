@@ -1,6 +1,5 @@
 from typing import Union
 
-from PIL import Image, ImageDraw
 from color import Color, check_if_color
 
 
@@ -16,7 +15,7 @@ class BaseTextContainer(list):
         self.append(other)
 
     def __repr__(self):
-        return f"BaseTextContainer({list(self)})"
+        return f'BaseTextContainer({list(self)})'
 
 
 class ColorText:
@@ -61,7 +60,7 @@ class ColorTextGroup(BaseTextContainer):
         if isinstance(text, (str, ColorText)):
             super().append(text)
         else:
-            raise TypeError("The text parameter is neither str nor ColorText")
+            raise TypeError('The text parameter is neither str nor ColorText')
 
 
 class TextBuffer(BaseTextContainer):
@@ -77,8 +76,9 @@ class TextBuffer(BaseTextContainer):
 def split_ep(
     text: Union[str, ColorText], length: int, pre_len: int = 0
 ):  # Cut strings by length but discard the first N characters
+    # https://github.com/PyCQA/pycodestyle/issues/373
     return text[:pre_len], [
-        text[i : i + length] for i in range(pre_len, len(text), length)
+        text[i : i + length] for i in range(pre_len, len(text), length)  # noqa
     ]
 
 
@@ -90,13 +90,13 @@ def split_ctg(
 
     if isinstance(group, list):
         group = ColorTextGroup(group)
-    for index, t in enumerate(group):
+    for t in group:
         if len(t) <= buffer.free_size:
-            buffer & t
+            # buffer & t
             continue
         if len(t) > buffer.free_size:
             _long_text_result = split_ep(t, length, buffer.free_size)
-            buffer & _long_text_result[0]
+            # buffer & _long_text_result[0]
             result.append(buffer.copy())
             buffer.clear()
             if len(_long_text_result[1][-1]) < length:
@@ -111,14 +111,16 @@ def split_ctg(
     return result
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     from pprint import pformat
 
     from colorama import Fore, Style
 
     def test_ctg(length: int, *params):
         print(
-            f"{Fore.GREEN}> running split_ctg(){Style.RESET_ALL}\n    length: {length}\n    texts: {params}"
+            f'{Fore.GREEN}> running split_ctg(){Style.RESET_ALL}\
+            \n    length: {length}\
+            \n    texts: {params}'
         )
         groups_ = ColorTextGroup(list(params))
         f_ = pformat(split_ctg(groups_, length)).split('\n')

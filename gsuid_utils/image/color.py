@@ -61,6 +61,9 @@ class ConvertableColor:
             h = (60 * ((b - r) / df) + 120) % 360
         elif mx == b:
             h = (60 * ((r - g) / df) + 240) % 360
+        else:
+            h = 360
+
         if mx == 0:
             s = 0
         else:
@@ -91,7 +94,7 @@ class Color(tuple):
 
     def __setitem__(self, key, value):
         if 0 <= value <= 255:
-            super().__setitem__(key, value)
+            super().__setitem__(key, value)  # type: ignore
         else:
             raise ValueError("Color value must be between 0 and 255")
 
@@ -112,6 +115,9 @@ if __name__ == '__main__':
     red = Color((1, 1, 1))
     print(f'HEX: {red.to.hex}\nHSV: {red.to.hsv}\nRGB: {red.to.rgb}')
     print(
-        f'rgb(123, 23, -1): {check_if_color("rgb(123, 23, -1)")}\n(100, 200, 255): {check_if_color((100, 200, 256))}'
+        f'rgb(123, 23, -1) \
+        {check_if_color("rgb(123, 23, -1)")}\
+        \n(100, 200, 255): \
+        {check_if_color((100, 200, 256))}'
     )
     print(check_if_color('#ff0000'))
