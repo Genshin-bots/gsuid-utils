@@ -6,7 +6,7 @@ from sqlmodel import Field, SQLModel
 class Bind(SQLModel, table=True):
     __table_args__ = {'keep_existing': True}
     id: Optional[int] = Field(default=None, primary_key=True, title='序号')
-    bod_id: str = Field(title='平台')
+    bot_id: str = Field(title='平台')
     user_id: str = Field(title='账号')
     uid: Optional[str] = Field(default=None, title='UID')
     mys_id: Optional[str] = Field(default=None, title='米游社通行证')
@@ -19,7 +19,7 @@ class User(SQLModel, table=True):
     mys_id: Optional[str] = Field(title='米游社通行证')
     cookie: Optional[str] = Field(title='Cookie')
     stoken: Optional[str] = Field(title='Stoken')
-    bod_id: str = Field(title='平台')
+    bot_id: str = Field(title='平台')
     user_id: str = Field(title='账号')
     push_switch: str = Field(title='全局推送开关')
     sign_switch: str = Field(title='自动签到')
