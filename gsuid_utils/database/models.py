@@ -15,23 +15,25 @@ class Bind(SQLModel, table=True):
 class User(SQLModel, table=True):
     __table_args__ = {'keep_existing': True}
     id: Optional[int] = Field(default=None, primary_key=True, title='序号')
-    uid: str = Field(title='UID')
-    mys_id: Optional[str] = Field(title='米游社通行证')
-    cookie: Optional[str] = Field(title='Cookie')
-    stoken: Optional[str] = Field(title='Stoken')
     bot_id: str = Field(title='平台')
+    uid: str = Field(title='UID')
+    mys_id: Optional[str] = Field(default=None, title='米游社通行证')
+    region: Optional[str] = Field(default=None, title='地区')
+    cookie: Optional[str] = Field(default=None, title='Cookie')
+    stoken: Optional[str] = Field(default=None, title='Stoken')
     user_id: str = Field(title='账号')
     push_switch: str = Field(title='全局推送开关')
     sign_switch: str = Field(title='自动签到')
     bbs_switch: str = Field(title='自动米游币')
-    status: Optional[str] = Field(title='状态')
+    status: Optional[str] = Field(default=None, title='状态')
 
 
 class Cache(SQLModel, table=True):
     __table_args__ = {'keep_existing': True}
     id: Optional[int] = Field(default=None, primary_key=True, title='序号')
-    uid: str = Field(title='UID')
-    cookie: str = Field(title='Cookie')
+    cookie: str = Field(default=None, title='Cookie')
+    uid: Optional[str] = Field(default=None, title='UID')
+    mys_id: Optional[str] = Field(default=None, title='米游社通行证')
 
 
 class Push(SQLModel, table=True):
