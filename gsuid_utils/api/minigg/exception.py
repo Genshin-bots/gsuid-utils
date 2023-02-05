@@ -1,6 +1,6 @@
 from typing import Any
 
-from gsuid_utils.types import AnyDict
+from gsuid_utils.api.types import AnyDict
 
 
 class MiniggNotFoundError(Exception):

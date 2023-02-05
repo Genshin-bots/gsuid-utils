@@ -11,9 +11,9 @@ from typing import Any, cast
 
 from httpx import AsyncClient
 
-from gsuid_utils.types import AnyDict
-from gsuid_utils.minigg.exception import MiniggNotFoundError
-from gsuid_utils.minigg.models import Weapon, WeaponCosts, WeaponStats
+from gsuid_utils.api.types import AnyDict
+from gsuid_utils.api.minigg.exception import MiniggNotFoundError
+from gsuid_utils.api.minigg.models import Weapon, WeaponCosts, WeaponStats
 
 MINIGG_AUDIO_URL = "https://genshin.minigg.cn/"
 MINIGG_URL = "https://info.minigg.cn"
