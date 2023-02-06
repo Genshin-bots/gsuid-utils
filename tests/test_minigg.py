@@ -3,7 +3,7 @@ import pytest
 
 @pytest.mark.asyncio
 async def test_get_weapon_info():
-    from gsuid_utils.minigg import Weapon, get_weapon_info
+    from gsuid_utils.api.minigg import Weapon, get_weapon_info
 
     data = await get_weapon_info("天目影打刀")
     assert isinstance(data, dict)
@@ -91,7 +91,7 @@ async def test_get_weapon_info():
 
 @pytest.mark.asyncio
 async def test_get_weapon_info_list():
-    from gsuid_utils.minigg import get_weapon_info
+    from gsuid_utils.api.minigg import get_weapon_info
 
     data = await get_weapon_info("1")
     assert isinstance(data, list)
@@ -100,7 +100,7 @@ async def test_get_weapon_info_list():
 
 @pytest.mark.asyncio
 async def test_get_weapon_costs():
-    from gsuid_utils.minigg import get_weapon_costs
+    from gsuid_utils.api.minigg import get_weapon_costs
 
     data = await get_weapon_costs("天目影打刀")
     assert isinstance(data, dict)
@@ -146,7 +146,7 @@ async def test_get_weapon_costs():
 
 @pytest.mark.asyncio
 async def test_get_weapon_info_not_found():
-    from gsuid_utils.minigg import MiniggNotFoundError, get_weapon_info
+    from gsuid_utils.api.minigg import MiniggNotFoundError, get_weapon_info
 
     with pytest.raises(MiniggNotFoundError) as exc_info:
         await get_weapon_info("111111111111111111111")
@@ -159,7 +159,7 @@ async def test_get_weapon_info_not_found():
 
 @pytest.mark.asyncio
 async def test_get_weapon_stats():
-    from gsuid_utils.minigg import WeaponStats, get_weapon_stats
+    from gsuid_utils.api.minigg import WeaponStats, get_weapon_stats
 
     data = await get_weapon_stats("天目影打刀", stats=50)
     assert isinstance(data, dict)
@@ -175,7 +175,7 @@ async def test_get_weapon_stats():
 
 @pytest.mark.asyncio
 async def test_get_weapon_stats_value_error():
-    from gsuid_utils.minigg import get_weapon_stats
+    from gsuid_utils.api.minigg import get_weapon_stats
 
     with pytest.raises(ValueError) as exc_info:
         await get_weapon_stats("天目影打刀", stats=99)
