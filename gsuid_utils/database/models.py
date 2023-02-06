@@ -3,7 +3,7 @@ from typing import Optional
 from sqlmodel import Field, SQLModel
 
 
-class Bind(SQLModel, table=True):
+class GsBind(SQLModel, table=True):
     __table_args__ = {'keep_existing': True}
     id: Optional[int] = Field(default=None, primary_key=True, title='序号')
     bot_id: str = Field(title='平台')
@@ -12,7 +12,7 @@ class Bind(SQLModel, table=True):
     mys_id: Optional[str] = Field(default=None, title='米游社通行证')
 
 
-class User(SQLModel, table=True):
+class GsUser(SQLModel, table=True):
     __table_args__ = {'keep_existing': True}
     id: Optional[int] = Field(default=None, primary_key=True, title='序号')
     bot_id: str = Field(title='平台')
@@ -28,7 +28,7 @@ class User(SQLModel, table=True):
     status: Optional[str] = Field(default=None, title='状态')
 
 
-class Cache(SQLModel, table=True):
+class GsCache(SQLModel, table=True):
     __table_args__ = {'keep_existing': True}
     id: Optional[int] = Field(default=None, primary_key=True, title='序号')
     cookie: str = Field(default=None, title='Cookie')
@@ -36,7 +36,7 @@ class Cache(SQLModel, table=True):
     mys_id: Optional[str] = Field(default=None, title='米游社通行证')
 
 
-class Push(SQLModel, table=True):
+class GsPush(SQLModel, table=True):
     __table_args__ = {'keep_existing': True}
     id: Optional[int] = Field(default=None, primary_key=True, title='序号')
     uid: str = Field(title='UID')
