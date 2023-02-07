@@ -1,5 +1,3 @@
-__all__ = ['GROW_CURVE_LIST', 'WEAPON_GROW_CURVE', 'PROP_MAP']
-
 GROW_CURVE_LIST = [
     {
         'level': 1,

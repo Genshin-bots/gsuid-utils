@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import sys
-from typing import Literal, TypedDict
+from typing import List, Literal, TypedDict
 
 # https://peps.python.org/pep-0655/#usage-in-python-3-11
 if sys.version_info >= (3, 11):
@@ -12,7 +12,7 @@ else:
 
 class EnkaData(TypedDict):
     playerInfo: PlayerInfo
-    avatarInfoList: list[AvatarInfoListItem]
+    avatarInfoList: List[AvatarInfoListItem]
     ttl: int
     uid: str
 
@@ -26,8 +26,8 @@ class PlayerInfo(TypedDict):
     finishAchievementNum: int
     towerFloorIndex: int
     towerLevelIndex: int
-    showAvatarInfoList: list[ShowAvatarInfoListItem]
-    showNameCardIdList: NotRequired[list[int]]
+    showAvatarInfoList: List[ShowAvatarInfoListItem]
+    showNameCardIdList: NotRequired[List[int]]
     profilePicture: ProfilePicture
 
 
@@ -44,12 +44,12 @@ class ProfilePicture(TypedDict):
 class AvatarInfoListItem(TypedDict):
     avatarId: int
     propMap: dict[str, PropMap]
-    talentIdList: NotRequired[list[int]]
+    talentIdList: NotRequired[List[int]]
     fightPropMap: dict[str, float]
     skillDepotId: int
-    inherentProudSkillList: list[int]
+    inherentProudSkillList: List[int]
     skillLevelMap: dict[str, int]
-    equipList: list[Equip]
+    equipList: List[Equip]
     fetterInfo: FetterInfo
 
 
@@ -67,7 +67,7 @@ class Flat(TypedDict):
 
     # artifact
     reliquaryMainstat: NotRequired[Stat]
-    reliquarySubstats: NotRequired[list[Stat]]
+    reliquarySubstats: NotRequired[List[Stat]]
     equipType: Literal[
         "EQUIP_BRACER",
         "EQUIP_NECKLACE",
@@ -77,7 +77,7 @@ class Flat(TypedDict):
     ]
 
     # weapon
-    weaponStats: NotRequired[list[Stat]]
+    weaponStats: NotRequired[List[Stat]]
 
     rankLevel: Literal[3, 4, 5]
     itemType: Literal["ITEM_WEAPON", "ITEM_RELIQUARY"]
@@ -99,7 +99,7 @@ class Weapon(TypedDict):
 class Reliquary(TypedDict):
     level: int
     mainPropId: int
-    appendPropIdList: list[int]
+    appendPropIdList: List[int]
 
 
 class PropMap(TypedDict):

@@ -41,12 +41,12 @@ class AscendItem(TypedDict):
 
 
 class WeaponCosts(TypedDict):
-    ascend1: list[AscendItem]
-    ascend2: list[AscendItem]
-    ascend3: list[AscendItem]
-    ascend4: list[AscendItem]
-    ascend5: list[AscendItem]
-    ascend6: list[AscendItem]
+    ascend1: List[AscendItem]
+    ascend2: List[AscendItem]
+    ascend3: List[AscendItem]
+    ascend4: List[AscendItem]
+    ascend5: List[AscendItem]
+    ascend6: List[AscendItem]
 
 
 class Weapon(TypedDict):
