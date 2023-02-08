@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from typing import Dict, List, TypedDict
 
-
 ################
 # Token Models #
 ################
+
 
 class GameToken(TypedDict):
     token_type: int
@@ -50,6 +50,7 @@ class GetHk4eToken(TypedDict):
 ################
 # 扫码登录相关 #
 ################
+
 
 class QrCodeUrl(TypedDict):
     url: str
@@ -179,7 +180,7 @@ PropsData = TypedDict(
         "37": str,
         "48a": str,
         "57": str,
-    }
+    },
 )
 
 
