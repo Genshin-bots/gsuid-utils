@@ -1,12 +1,12 @@
 from .models import (
-    MihoyoRole, 
+    AbyssData,
+    IndexData,
+    MihoyoRole,
+    MihoyoAvatar,
     MihoyoWeapon,
+    DailyNoteData,
     MihoyoReliquary,
     MihoyoConstellation,
-    MihoyoAvatar,
-    AbyssData,
-    DailyNoteData,
-    IndexData
 )
 
 __all__ = ["models"]

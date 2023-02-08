@@ -14,6 +14,7 @@ else:
 # and https://api-takumi-record.mihoyo.com/game_record/app/genshin/api/character
 # 玩家、武器、圣遗物、角色模型
 
+
 class MihoyoRole(TypedDict):
     AvatarUrl: str
     nickname: str
@@ -77,7 +78,9 @@ class MihoyoAvatar(TypedDict):
     icon: NotRequired[str]
     """在api/character接口有"""
     name: str
-    element: Literal['Geo', 'Anemo', 'Dendro', 'Electro', 'Pyro', 'Cryo', 'Hydro']
+    element: Literal[
+        'Geo', 'Anemo', 'Dendro', 'Electro', 'Pyro', 'Cryo', 'Hydro'
+    ]
     fetter: int
     level: int
     rarity: int
@@ -97,6 +100,7 @@ class MihoyoAvatar(TypedDict):
 
 
 # Response from https://api-takumi-record.mihoyo.com/game_record/app/genshin/api/spiralAbyss
+
 
 class AbyssAvatar(TypedDict):
     avatar_id: int
@@ -155,6 +159,7 @@ class AbyssData(TypedDict):
 
 # Response from https://api-takumi-record.mihoyo.com/game_record/app/genshin/api/dailyNote
 
+
 class Expedition(TypedDict):
     avatar_side_icon: str
     status: Literal['Ongoing', 'Finished']
@@ -197,6 +202,7 @@ class DailyNoteData(TypedDict):
 
 
 # Response from https://api-takumi.mihoyo.com/game_record/app/genshin/api/index
+
 
 class Stats(TypedDict):
     active_day_number: int
