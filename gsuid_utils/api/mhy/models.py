@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import sys
-from typing import Dict, List, TypedDict, NotRequired
+from typing import Dict, List, TypedDict
 
 # https://peps.python.org/pep-0655/#usage-in-python-3-11
 if sys.version_info >= (3, 11):
@@ -15,33 +15,33 @@ else:
 ################
 
 
-class GetStokenByGameToken(TypedDict):
-    token: Stoken
-    user_info: UserInfo
-
-
-class GetCookieToken(TypedDict):
+class CookieTokenInfo(TypedDict):
     uid: str
     cookie_token: str
 
 
-class Stoken(TypedDict):
+class StokenInfo(TypedDict):
     token_type: NotRequired[int]
     name: NotRequired[str]
     token: str
 
 
-class GetStokenByLoginTicket(TypedDict):
-    List: List[Stoken]
+class GameTokenInfo(TypedDict):
+    token: StokenInfo
+    user_info: UserInfo
 
 
-class GetAuthKeyByCookie(TypedDict):
+class LoginTicketInfo(TypedDict):
+    List: List[StokenInfo]
+
+
+class AuthKeyInfo(TypedDict):
     sign_type: int
     sign_type: int
     authkey: str
 
 
-class GetHk4eToken(TypedDict):
+class Hk4eLoginInfo(TypedDict):
     game: str
     region: str
     game_uid: str
@@ -66,7 +66,7 @@ class Payload(TypedDict):
     ext: str
 
 
-class CheckQrCode(TypedDict):
+class QrCodeStatus(TypedDict):
     stat: str
     payload: Dict[Payload]
 
@@ -76,7 +76,7 @@ class CheckQrCode(TypedDict):
 ################
 
 
-class UserInfoLinks(TypedDict):
+class UserLinks(TypedDict):
     thirdparty: str
     union_id: str
     nickname: str
@@ -97,22 +97,27 @@ class UserInfo(TypedDict):
     rebind_area_code: str
     rebind_mobile: str
     rebind_mobile_time: str
-    links: List[UserInfoLinks]
+    links: List[UserLinks]
 
 
-class MiHoYoBBSInfoListData(TypedDict):
+################
+# 米游社信息相关 #
+################
+
+
+class GameList(TypedDict):
     name: str
     type: int
     value: str
 
 
-class MiHoYoBBSInfoListDataSwitches(TypedDict):
+class SwitchInfo(TypedDict):
     switch_id: int
     is_public: bool
     switch_name: str
 
 
-class MiHoYoBBSInfoList(TypedDict):
+class BBSInfo(TypedDict):
     has_role: bool
     game_id: int
     game_role_id: str
@@ -121,16 +126,16 @@ class MiHoYoBBSInfoList(TypedDict):
     level: int
     background_image: str
     is_public: bool
-    data: List[MiHoYoBBSInfoListData]
+    data: List[GameList]
     region_name: str
     url: str
-    data_switches: List[MiHoYoBBSInfoListDataSwitches]
+    data_switches: List[SwitchInfo]
     h5_data_switches: List
     background_color: str
 
 
 class MihoyoBBSInfo(TypedDict):
-    list: List[MiHoYoBBSInfoList]
+    list: List[BBSInfo]
 
 
 ################
@@ -164,15 +169,15 @@ class GachaLog(TypedDict):
 ################
 
 
-class CardOptsData(TypedDict):
+class CardOpts(TypedDict):
     adjs: List[int]
     titles: List[int]
     items: List[int]
     data_version: str
 
 
-PropsData = TypedDict(
-    'PropsData',
+Props = TypedDict(
+    'Props',
     {
         "66a": str,
         "50a": str,
@@ -188,10 +193,10 @@ PropsData = TypedDict(
 )
 
 
-class RegTimeData(TypedDict):
+class RegTime(TypedDict):
     data: str
-    card_opts: CardOptsData
-    props: PropsData
+    card_opts: CardOpts
+    props: Props
     data_version: int
     prop_version: int
 
@@ -201,7 +206,7 @@ class RegTimeData(TypedDict):
 ################
 
 
-class Covers(TypedDict):
+class CardCovers(TypedDict):
     id: int
     image: str
 
@@ -213,7 +218,7 @@ class GcgInfo(TypedDict):
     avatar_card_num_total: int
     action_card_num_gained: int
     action_card_num_total: int
-    covers: List[Covers]
+    covers: List[CardCovers]
 
 
 ################
@@ -228,7 +233,7 @@ class DayData(TypedDict):
     last_mora: int
 
 
-class MonthGroupBy(TypedDict):
+class GroupBy(TypedDict):
     action_id: int
     action: str
     num: int
@@ -243,7 +248,7 @@ class MonthData(TypedDict):
     current_primogems_level: int
     primogems_rate: int
     mora_rate: int
-    group_by: List[MonthGroupBy]
+    group_by: List[GroupBy]
 
 
 class MonthlyAward(TypedDict):
