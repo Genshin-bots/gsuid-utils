@@ -1,20 +1,23 @@
 from __future__ import annotations
 
-from typing import Dict, List, TypedDict
+import sys
+from typing import Dict, List, TypedDict, NotRequired
+
+# https://peps.python.org/pep-0655/#usage-in-python-3-11
+if sys.version_info >= (3, 11):
+    from typing import NotRequired
+else:
+    from typing_extensions import NotRequired
+
 
 ################
 # Token Models #
 ################
 
 
-class GameToken(TypedDict):
-    token_type: int
-    token: str
-
-
 class GetStokenByGameToken(TypedDict):
-    token: GameToken
-    user_info: str
+    token: Stoken
+    user_info: UserInfo
 
 
 class GetCookieToken(TypedDict):
@@ -23,7 +26,8 @@ class GetCookieToken(TypedDict):
 
 
 class Stoken(TypedDict):
-    name: str
+    token_type: NotRequired[int]
+    name: NotRequired[str]
     token: str
 
 
@@ -51,12 +55,11 @@ class GetHk4eToken(TypedDict):
 # 扫码登录相关 #
 ################
 
-
 class QrCodeUrl(TypedDict):
     url: str
 
 
-class QrCodePayload(TypedDict):
+class Payload(TypedDict):
     proto: str
     raw: str
     ext: str
@@ -64,7 +67,7 @@ class QrCodePayload(TypedDict):
 
 class CheckQrCode(TypedDict):
     stat: str
-    payload: Dict[QrCodePayload]
+    payload: Dict[Payload]
 
 
 ################
@@ -147,7 +150,7 @@ class SingleGachaLog(TypedDict):
     id: str
 
 
-class GetGachaLogByAuthkey(TypedDict):
+class GachaLog(TypedDict):
     page: str
     size: str
     total: str
@@ -197,7 +200,7 @@ class RegTimeData(TypedDict):
 ################
 
 
-class GcgCovers(TypedDict):
+class Covers(TypedDict):
     id: int
     image: str
 
@@ -209,7 +212,7 @@ class GcgInfo(TypedDict):
     avatar_card_num_total: int
     action_card_num_gained: int
     action_card_num_total: int
-    covers: List[GcgCovers]
+    covers: List[Covers]
 
 
 ################
@@ -217,21 +220,21 @@ class GcgInfo(TypedDict):
 ################
 
 
-class MonthlyAwardDayData(TypedDict):
+class DayData(TypedDict):
     current_primogems: int
     current_mora: int
     last_primogems: int
     last_mora: int
 
 
-class MonthlyAwardMonthGroupBy(TypedDict):
+class MonthGroupBy(TypedDict):
     action_id: int
     action: str
     num: int
     percent: int
 
 
-class MonthlyAwardMonthData(TypedDict):
+class MonthData(TypedDict):
     current_primogems: int
     current_mora: int
     last_primogems: int
@@ -239,7 +242,7 @@ class MonthlyAwardMonthData(TypedDict):
     current_primogems_level: int
     primogems_rate: int
     mora_rate: int
-    group_by: List[MonthlyAwardMonthGroupBy]
+    group_by: List[MonthGroupBy]
 
 
 class MonthlyAward(TypedDict):
@@ -252,8 +255,8 @@ class MonthlyAward(TypedDict):
     optional_month: List[int]
     data_month: int
     data_last_month: int
-    day_data: MonthlyAwardDayData
-    month_data: MonthlyAwardMonthData
+    day_data: DayData
+    month_data: MonthData
     lantern: bool
 
 
