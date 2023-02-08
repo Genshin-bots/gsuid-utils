@@ -154,16 +154,16 @@ class GetGachaLogByAuthkey(TypedDict):
     region: str
 
 
-class CardOptsData(TypedDict):
-    adjs: List
-    titles: List
-    items: List
-    data_version: str
-
-
 ################
 # 注册时间相关 #
 ################
+
+
+class CardOptsData(TypedDict):
+    adjs: List[int]
+    titles: List[int]
+    items: List[int]
+    data_version: str
 
 
 PropsData = TypedDict(
