@@ -1,7 +1,55 @@
 from __future__ import annotations
 
-from typing import Dict, List, Literal, Optional, TypedDict
+from typing import Dict, List, TypedDict
 
+
+################
+# Token Models #
+################
+
+class GameToken(TypedDict):
+    token_type: int
+    token: str
+
+
+class GetStokenByGameToken(TypedDict):
+    token: GameToken
+    user_info: str
+
+
+class GetCookieToken(TypedDict):
+    uid: str
+    cookie_token: str
+
+
+class Stoken(TypedDict):
+    name: str
+    token: str
+
+
+class GetStokenByLoginTicket(TypedDict):
+    List: List[Stoken]
+
+
+class GetAuthKeyByCookie(TypedDict):
+    sign_type: int
+    sign_type: int
+    authkey: str
+
+
+class GetHk4eToken(TypedDict):
+    game: str
+    region: str
+    game_uid: str
+    game_biz: str
+    level: int
+    nickname: str
+    region_name: str
+
+
+################
+# 扫码登录相关 #
+################
 
 class QrCodeUrl(TypedDict):
     url: str
@@ -18,9 +66,9 @@ class CheckQrCode(TypedDict):
     payload: Dict[QrCodePayload]
 
 
-class GameToken(TypedDict):
-    token_type: int
-    token: str
+################
+# UserInfo相关 #
+################
 
 
 class UserInfoLinks(TypedDict):
@@ -45,25 +93,6 @@ class UserInfo(TypedDict):
     rebind_mobile: str
     rebind_mobile_time: str
     links: List[UserInfoLinks]
-
-
-class GetStokenByGameToken(TypedDict):
-    token: GameToken
-    user_info: str
-
-
-class GetCookieToken(TypedDict):
-    uid: str
-    cookie_token: str
-
-
-class Stoken(TypedDict):
-    name: str
-    token: str
-
-
-class GetStokenByLoginTicket(TypedDict):
-    List: List[Stoken]
 
 
 class MiHoYoBBSInfoListData(TypedDict):
@@ -99,10 +128,9 @@ class MihoyoBBSInfo(TypedDict):
     list: List[MiHoYoBBSInfoList]
 
 
-class GetAuthKeyByCookie(TypedDict):
-    sign_type: int
-    sign_type: int
-    authkey: str
+################
+# 抽卡记录相关 #
+################
 
 
 class SingleGachaLog(TypedDict):
@@ -118,7 +146,7 @@ class SingleGachaLog(TypedDict):
     id: str
 
 
-class GachaLogByAuthkey(TypedDict):
+class GetGachaLogByAuthkey(TypedDict):
     page: str
     size: str
     total: str
@@ -131,6 +159,11 @@ class CardOptsData(TypedDict):
     titles: List
     items: List
     data_version: str
+
+
+################
+# 注册时间相关 #
+################
 
 
 PropsData = TypedDict(
@@ -158,14 +191,9 @@ class RegTimeData(TypedDict):
     prop_version: int
 
 
-class GetHk4eToken(TypedDict):
-    game: str
-    region: str
-    game_uid: str
-    game_biz: str
-    level: int
-    nickname: str
-    region_name: str
+################
+# 七圣召唤相关 #
+################
 
 
 class GcgCovers(TypedDict):
@@ -181,6 +209,11 @@ class GcgInfo(TypedDict):
     action_card_num_gained: int
     action_card_num_total: int
     covers: List[GcgCovers]
+
+
+################
+# 每月札记相关 #
+################
 
 
 class MonthlyAwardDayData(TypedDict):
@@ -221,6 +254,11 @@ class MonthlyAward(TypedDict):
     day_data: MonthlyAwardDayData
     month_data: MonthlyAwardMonthData
     lantern: bool
+
+
+################
+# 签到相关 #
+################
 
 
 class MihoyoBBSSign(TypedDict):
