@@ -55,6 +55,7 @@ class GetHk4eToken(TypedDict):
 # 扫码登录相关 #
 ################
 
+
 class QrCodeUrl(TypedDict):
     url: str
 
