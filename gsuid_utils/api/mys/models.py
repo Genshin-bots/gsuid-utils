@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import sys
-from typing import Dict, List, Literal, TypedDict
+from typing import Dict, List, Literal, Optional, TypedDict
 
 # https://peps.python.org/pep-0655/#usage-in-python-3-11
 if sys.version_info >= (3, 11):
@@ -267,6 +267,10 @@ class IndexData(TypedDict):
     homes: List[Home]
 
 
+class CharDetailData(TypedDict):
+    avatars: List[MihoyoAvatar]
+
+
 ################
 # Token Models #
 ################
@@ -294,7 +298,7 @@ class LoginTicketInfo(TypedDict):
 
 class AuthKeyInfo(TypedDict):
     sign_type: int
-    sign_type: int
+    authkey_ver: int
     authkey: str
 
 
@@ -317,15 +321,15 @@ class QrCodeUrl(TypedDict):
     url: str
 
 
-class Payload(TypedDict):
+class QrPayload(TypedDict):
     proto: str
     raw: str
     ext: str
 
 
 class QrCodeStatus(TypedDict):
-    stat: str
-    payload: Dict[str, Payload]
+    stat: Literal['Init', 'Scanned', 'Confirmed']
+    payload: Dict[str, QrPayload]
 
 
 ################
@@ -528,7 +532,7 @@ class MonthlyAward(TypedDict):
 ################
 
 
-class MihoyoBBSSign(TypedDict):
+class MysSign(TypedDict):
     code: str
     risk_code: int
     gt: str
@@ -557,3 +561,70 @@ class SignList(TypedDict):
     month: int
     awards: List[SignAward]
     resign: bool
+
+
+################
+# 养成计算器部分 #
+################
+
+
+class CalculateInfo(TypedDict):
+    skill_list: List[CalculateSkill]
+    weapon: CalculateWeapon
+    reliquary_list: List[CalculateReliquary]
+
+
+class CalculateBaseData(TypedDict):
+    id: int
+    name: str
+    icon: str
+    max_level: int
+    level_current: int
+
+
+class CalculateWeapon(CalculateBaseData):
+    weapon_cat_id: int
+    weapon_level: int
+
+
+class CalculateReliquary(CalculateBaseData):
+    reliquary_cat_id: int
+    reliquary_level: int
+
+
+class CalculateSkill(CalculateBaseData):
+    group_id: int
+
+
+################
+#  RecordCard  #
+################
+
+
+class MysGame(TypedDict):
+    has_role: bool
+    game_id: int  # 2是原神
+    game_role_id: str  # UID
+    nickname: str
+    region: str
+    level: int
+    background_image: str
+    is_public: bool
+    data: List[MysGameData]
+    region_name: str
+    url: str
+    data_switches: List[MysGameSwitch]
+    h5_data_switches: Optional[List]
+    background_color: str  # 十六进制颜色代码
+
+
+class MysGameData(TypedDict):
+    name: str
+    type: int
+    value: str
+
+
+class MysGameSwitch(TypedDict):
+    switch_id: int
+    is_public: bool
+    switch_name: str

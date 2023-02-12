@@ -2,6 +2,7 @@
 米游社 API 包装
 """
 
+from .request import MysApi  # noqa: F401
 from .models import (  # noqa: F401
     AbyssData,
     IndexData,
@@ -13,4 +14,4 @@ from .models import (  # noqa: F401
     MihoyoConstellation,
 )
 
-__all__ = ["models"]
+__all__ = ["models", 'request']
