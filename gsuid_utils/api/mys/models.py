@@ -362,44 +362,6 @@ class UserInfo(TypedDict):
 
 
 ################
-# 米游社信息相关 #
-################
-
-
-class GameList(TypedDict):
-    name: str
-    type: int
-    value: str
-
-
-class SwitchInfo(TypedDict):
-    switch_id: int
-    is_public: bool
-    switch_name: str
-
-
-class BBSInfo(TypedDict):
-    has_role: bool
-    game_id: int
-    game_role_id: str
-    nickname: str
-    region: str
-    level: int
-    background_image: str
-    is_public: bool
-    data: List[GameList]
-    region_name: str
-    url: str
-    data_switches: List[SwitchInfo]
-    h5_data_switches: List
-    background_color: str
-
-
-class MihoyoBBSInfo(TypedDict):
-    list: List[BBSInfo]
-
-
-################
 # 抽卡记录相关 #
 ################
 
