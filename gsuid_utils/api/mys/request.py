@@ -32,7 +32,6 @@ from .models import (
     AbyssData,
     IndexData,
     SignAward,
-    StokenInfo,
     AuthKeyInfo,
     QrCodeStatus,
     CalculateInfo,
@@ -40,6 +39,7 @@ from .models import (
     GameTokenInfo,
     CharDetailData,
     CookieTokenInfo,
+    LoginTicketInfo,
 )
 
 mysVersion = '2.44.1'
@@ -343,7 +343,7 @@ class MysApi:
             {'Cookie': cookie},
         )
         if isinstance(data, Dict):
-            data = cast(List[MysGame], data['data'])
+            data = cast(List[MysGame], data['data']['list'])
         return data
 
     async def create_qrcode_url(self) -> Union[Dict, int]:
@@ -459,7 +459,7 @@ class MysApi:
 
     async def get_stoken_by_login_ticket(
         self, lt: str, mys_id: str
-    ) -> Union[StokenInfo, int]:
+    ) -> Union[LoginTicketInfo, int]:
         data = await self._mys_request(
             url=_API['GET_STOKEN_URL'],
             method='GET',
@@ -471,7 +471,7 @@ class MysApi:
             },
         )
         if isinstance(data, Dict):
-            data = cast(StokenInfo, data['data'])
+            data = cast(LoginTicketInfo, data['data'])
         return data
 
     async def get_stoken_by_game_token(

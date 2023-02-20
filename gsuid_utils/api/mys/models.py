@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import sys
-from typing import Dict, List, Literal, Optional, TypedDict
+from typing import List, Literal, Optional, TypedDict
 
 # https://peps.python.org/pep-0655/#usage-in-python-3-11
 if sys.version_info >= (3, 11):
@@ -293,7 +293,7 @@ class GameTokenInfo(TypedDict):
 
 
 class LoginTicketInfo(TypedDict):
-    List: List[StokenInfo]
+    list: List[StokenInfo]
 
 
 class AuthKeyInfo(TypedDict):
@@ -329,7 +329,7 @@ class QrPayload(TypedDict):
 
 class QrCodeStatus(TypedDict):
     stat: Literal['Init', 'Scanned', 'Confirmed']
-    payload: Dict[str, QrPayload]
+    payload: QrPayload
 
 
 ################

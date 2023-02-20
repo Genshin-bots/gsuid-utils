@@ -1,12 +1,15 @@
+import asyncio
 from typing import Dict, List, Literal, Optional
 
-from utils import SERVER
+from sqlmodel import SQLModel
 from sqlalchemy.future import select
 from sqlalchemy import delete, update
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql.expression import func
-from models import GsBind, GsPush, GsUser, GsCache
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+
+from .utils import SERVER
+from .models import GsBind, GsPush, GsUser, GsCache
 
 
 class SQLA:
@@ -15,6 +18,13 @@ class SQLA:
         self.url = f'sqlite+aiosqlite:///{url}'
         self.engine = create_async_engine(self.url, pool_recycle=1500)
         self.session = sessionmaker(self.engine, class_=AsyncSession)()
+
+    def create_all(self):
+        asyncio.create_task(self._create_all())
+
+    async def _create_all(self):
+        async with self.engine.begin() as conn:
+            await conn.run_sync(SQLModel.metadata.create_all)
 
     #####################
     # GsBind 部分 #
@@ -32,28 +42,31 @@ class SQLA:
         new_uid = data['uid'] if 'uid' in data else ''
         if len(new_uid) != 9:
             return -1
-        if self.bind_exists(user_id):
-            uid_list = await self.get_user_uid_list(user_id)
-            uid_list.append(new_uid) if uid_list else 0
+        if await self.bind_exists(user_id):
+            uid_list = await self.get_bind_uid_list(user_id)
+            if uid_list and new_uid not in uid_list:
+                uid_list.append(new_uid)
+            else:
+                return -2
             data['uid'] = '_'.join(uid_list)
             await self.update_bind_data(user_id, data)
         else:
             new_data = GsBind(user_id=user_id, bot_id=self.bot_id, **data)
             self.session.add(new_data)
-        await self.session.flush()
+        await self.session.commit()
         return 0
 
     async def delete_bind_data(self, user_id: str, **data) -> int:
         _uid = data['uid'] if 'uid' in data else ''
-        if self.bind_exists(user_id):
-            uid_list = await self.get_user_uid_list(user_id)
+        if await self.bind_exists(user_id):
+            uid_list = await self.get_bind_uid_list(user_id)
             if uid_list and _uid in uid_list:
                 uid_list.remove(_uid)
             else:
                 return -1
             data['uid'] = '_'.join(uid_list)
             await self.update_bind_data(user_id, data)
-            await self.session.flush()
+            await self.session.commit()
             return 0
         else:
             return -1
@@ -79,18 +92,18 @@ class SQLA:
             uid_list.extend(item.uid.split("_") if item.uid else [])
         return uid_list
 
-    async def get_user_uid_list(self, user_id: str) -> List[str]:
+    async def get_bind_uid_list(self, user_id: str) -> List[str]:
         data = await self.select_bind_data(user_id)
         return data.uid.split("_") if data and data.uid else []
 
-    async def get_user_uid(self, user_id: str) -> Optional[str]:
-        data = await self.get_user_uid_list(user_id)
+    async def get_bind_uid(self, user_id: str) -> Optional[str]:
+        data = await self.get_bind_uid_list(user_id)
         return data[0] if data else None
 
     async def switch_uid(
         self, user_id: str, uid: Optional[str] = None
     ) -> Optional[List]:
-        uid_list = await self.get_user_uid_list(user_id)
+        uid_list = await self.get_bind_uid_list(user_id)
         if uid_list and len(uid_list) >= 1:
             if uid and uid not in uid_list:
                 return None
@@ -110,9 +123,7 @@ class SQLA:
     #####################
 
     async def select_user_data(self, uid: str) -> Optional[GsUser]:
-        sql = select(GsUser).where(
-            GsUser.uid == uid, GsUser.bot_id == self.bot_id
-        )
+        sql = select(GsUser).where(GsUser.uid == uid)
         result = await self.session.execute(sql)
         return data[0] if (data := result.scalars().all()) else None
 
@@ -137,7 +148,7 @@ class SQLA:
     ) -> bool:
         new_data = GsCache(cookie=cookie, uid=uid, mys_id=mys_id)
         self.session.add(new_data)
-        await self.session.flush()
+        await self.session.commit()
         return True
 
     async def insert_user_data(
@@ -147,22 +158,23 @@ class SQLA:
             sql = (
                 update(GsUser)
                 .where(GsUser.uid == uid)
-                .values(cookie=cookie, status=None)
+                .values(cookie=cookie, status=None, stoken=stoken)
             )
             await self.session.execute(sql)
-        user_data = GsUser(
-            uid=uid,
-            cookie=cookie,
-            stoken=stoken,
-            user_id=user_id,
-            bot_id=self.bot_id,
-            sign_switch='off',
-            push_switch='off',
-            bbs_switch='off',
-            region=SERVER.get(uid[0], 'cn_gf01'),
-        )
-        self.session.add(user_data)
-        await self.session.flush()
+        else:
+            user_data = GsUser(
+                uid=uid,
+                cookie=cookie,
+                stoken=stoken if stoken else None,
+                user_id=user_id,
+                bot_id=self.bot_id,
+                sign_switch='off',
+                push_switch='off',
+                bbs_switch='off',
+                region=SERVER.get(uid[0], 'cn_gf01'),
+            )
+            self.session.add(user_data)
+        await self.session.commit()
         return True
 
     async def update_user_data(self, user_id: str, data: Optional[Dict]):
@@ -199,7 +211,7 @@ class SQLA:
         if await self.user_exists(uid):
             sql = update(GsUser).where(GsUser.uid == uid).values(stoken=stoken)
             await self.session.execute(sql)
-            await self.session.flush()
+            await self.session.commit()
             return True
         return False
 
@@ -207,14 +219,14 @@ class SQLA:
         if await self.user_exists(uid):
             sql = update(GsUser).where(GsUser.uid == uid).values(**data)
             await self.session.execute(sql)
-            await self.session.flush()
+            await self.session.commit()
             return True
         return False
 
     async def update_error_status(self, cookie: str, err: str) -> bool:
         sql = update(GsUser).where(GsUser.cookie == cookie).values(status=err)
         await self.session.execute(sql)
-        await self.session.flush()
+        await self.session.commit()
         return True
 
     async def get_user_cookie(self, uid: str) -> Optional[str]:
@@ -302,13 +314,13 @@ class SQLA:
             transform_is_push='off',
         )
         self.session.add(push_data)
-        await self.session.flush()
+        await self.session.commit()
 
     async def update_push_data(self, uid: str, data: dict) -> bool:
         await self.push_exists(uid)
         sql = update(GsPush).where(GsPush.uid == uid).values(**data)
         await self.session.execute(sql)
-        await self.session.flush()
+        await self.session.commit()
         return True
 
     async def select_push_data(self, uid: str) -> GsPush:
@@ -320,7 +332,16 @@ class SQLA:
     async def push_exists(self, uid: str) -> bool:
         sql = select(GsPush).where(GsPush.uid == uid)
         result = await self.session.execute(sql)
-        data = result.scalars().one()
+        data = result.scalars().all()
         if not data:
             await self.insert_push_data(uid)
+        return True
+
+    #####################
+    # 杂项部分 #
+    #####################
+
+    async def refresh_cache(self, uid: str):
+        sql = delete(GsCache).where(GsCache.uid == uid)
+        await self.session.execute(sql)
         return True
