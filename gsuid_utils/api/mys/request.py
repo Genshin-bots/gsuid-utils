@@ -77,14 +77,46 @@ class MysApi:
         ...
 
     @abstractmethod
-    async def get_ck(
-        self, uid: str, mode: Literal['OWNER', 'RANDOM'] = 'RANDOM'
-    ) -> str:
+    async def _pass(self, gt: str, ch: str, header: Dict):
         ...
 
     @abstractmethod
-    async def get_stoken(self, uid: str) -> str:
+    async def get_ck(
+        self, uid: str, mode: Literal['OWNER', 'RANDOM'] = 'RANDOM'
+    ) -> Optional[str]:
         ...
+
+    @abstractmethod
+    async def get_stoken(self, uid: str) -> Optional[str]:
+        ...
+
+    async def get_upass_link(self, header: Dict) -> Union[int, Dict]:
+        header['DS'] = get_ds_token('is_high=false')
+        return await self._mys_request(
+            url=_API['VERIFICATION_URL'],
+            method='GET',
+            header=header,
+        )
+
+    async def get_header_and_vl(self, header: Dict, ch, vl):
+        header['DS'] = get_ds_token(
+            '',
+            {
+                'geetest_challenge': ch,
+                'geetest_validate': vl,
+                'geetest_seccode': f'{vl}|jordan',
+            },
+        )
+        _ = await self._mys_request(
+            url=_API['VERIFY_URL'],
+            method='POST',
+            header=header,
+            data={
+                'geetest_challenge': ch,
+                'geetest_validate': vl,
+                'geetest_seccode': f'{vl}|jordan',
+            },
+        )
 
     def check_os(self, uid: str) -> bool:
         return False if int(str(uid)[0]) < 6 else True
@@ -165,9 +197,12 @@ class MysApi:
         self, uid, header={}, server_id='cn_gf01'
     ) -> Union[MysSign, int]:
         server_id = RECOGNIZE_SERVER.get(str(uid)[0])
+        ck = await self.get_ck(uid, 'OWNER')
+        if ck is None:
+            return -51
         if int(str(uid)[0]) < 6:
             HEADER = copy.deepcopy(_HEADER)
-            HEADER['Cookie'] = await self.get_ck(uid, 'OWNER')
+            HEADER['Cookie'] = ck
             HEADER['x-rpc-device_id'] = random_hex(32)
             HEADER['x-rpc-app_version'] = '2.35.2'
             HEADER['x-rpc-client_type'] = '5'
@@ -191,7 +226,7 @@ class MysApi:
             )
         else:
             HEADER = copy.deepcopy(_HEADER_OS)
-            HEADER['Cookie'] = await self.get_ck(uid, 'OWNER')
+            HEADER['Cookie'] = ck
             HEADER['DS'] = generate_os_ds()
             HEADER.update(header)
             data = await self._mys_request(
@@ -212,9 +247,12 @@ class MysApi:
 
     async def get_award(self, uid) -> Union[SignAward, int]:
         server_id = RECOGNIZE_SERVER.get(str(uid)[0])
+        ck = await self.get_ck(uid, 'OWNER')
+        if ck is None:
+            return -51
         if int(str(uid)[0]) < 6:
             HEADER = copy.deepcopy(_HEADER)
-            HEADER['Cookie'] = await self.get_ck(uid, 'OWNER')
+            HEADER['Cookie'] = ck
             HEADER['DS'] = get_web_ds_token(True)
             HEADER['x-rpc-device_id'] = random_hex(32)
             data = await self._mys_request(
@@ -235,7 +273,7 @@ class MysApi:
             )
         else:
             HEADER = copy.deepcopy(_HEADER_OS)
-            HEADER['Cookie'] = await self.get_ck(uid, 'OWNER')
+            HEADER['Cookie'] = ck
             HEADER['x-rpc-device_id'] = random_hex(32)
             HEADER['DS'] = generate_os_ds()
             data = await self._mys_request(
@@ -512,8 +550,8 @@ class MysApi:
         server_id = RECOGNIZE_SERVER.get(str(uid)[0])
         HEADER = copy.deepcopy(_HEADER)
         stoken = await self.get_stoken(uid)
-        if not stoken:
-            return -1
+        if stoken is None:
+            return -51
         HEADER['Cookie'] = stoken
         HEADER['DS'] = get_web_ds_token(True)
         HEADER['User-Agent'] = 'okhttp/4.8.0'
@@ -568,7 +606,10 @@ class MysApi:
             )
         HEADER.update(header)
         if 'Cookie' not in HEADER and isinstance(uid, str):
-            HEADER['Cookie'] = await self.get_ck(uid)
+            ck = await self.get_ck(uid)
+            if ck is None:
+                return -51
+            HEADER['Cookie'] = ck
         data = await self._mys_request(
             url=_URL,
             method='GET',

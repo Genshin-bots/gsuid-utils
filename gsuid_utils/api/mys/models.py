@@ -500,6 +500,7 @@ class MysSign(TypedDict):
     gt: str
     challenge: str
     success: int
+    message: str
 
 
 class SignInfo(TypedDict):
