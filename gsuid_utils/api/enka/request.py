@@ -12,18 +12,17 @@ from gsuid_utils.api.enka.models import EnkaData
 
 ADDRESS = {
     'enka': 'https://enka.network',
-    'microgg': 'https://enka.microgg.cn',
-    'minigg': 'https://enka.minigg.cn',
+    'microgg': 'https://profile.microgg.cn',
 }
 
 
 async def get_enka_info(
-    uid: int, address: Literal['enka', 'microgg', 'minigg'] = 'enka'
+    uid: str, address: Literal['enka', 'microgg'] = 'enka'
 ) -> EnkaData:
     '''请求 Enka Network
 
     Args:
-        uid (int): 原神 UID
+        uid (str): 原神 UID
         address (Literal[&quot;enka&quot;, &quot;microgg&quot;, &quot;minigg&quot;], optional): API 地址. Defaults to 'enka'.
 
     Returns:
@@ -33,5 +32,5 @@ async def get_enka_info(
         base_url=ADDRESS[address],
         headers={'User-Agent': f'gsuid-utils/{__version__}'},
     ) as client:
-        req = await client.get(url=f'/u/{uid}/__data.json')
+        req = await client.get(url=f'/api/uid/{uid}')
         return req.json()

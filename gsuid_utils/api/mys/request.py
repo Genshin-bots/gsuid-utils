@@ -26,13 +26,14 @@ from .models import (
     GcgInfo,
     MysGame,
     MysSign,
+    RegTime,
     GachaLog,
     SignInfo,
     SignList,
     AbyssData,
     IndexData,
-    SignAward,
     AuthKeyInfo,
+    MonthlyAward,
     QrCodeStatus,
     CalculateInfo,
     DailyNoteData,
@@ -121,8 +122,8 @@ class MysApi:
     def check_os(self, uid: str) -> bool:
         return False if int(str(uid)[0]) < 6 else True
 
-    async def get_info(self, uid) -> Union[IndexData, int]:
-        data = await self.simple_mys_req('PLAYER_INFO_URL', uid)
+    async def get_info(self, uid, ck: Optional[str]) -> Union[IndexData, int]:
+        data = await self.simple_mys_req('PLAYER_INFO_URL', uid, cookie=ck)
         if isinstance(data, Dict):
             data = cast(IndexData, data['data'])
         return data
@@ -245,7 +246,7 @@ class MysApi:
             data = cast(MysSign, data['data'])
         return data
 
-    async def get_award(self, uid) -> Union[SignAward, int]:
+    async def get_award(self, uid) -> Union[MonthlyAward, int]:
         server_id = RECOGNIZE_SERVER.get(str(uid)[0])
         ck = await self.get_ck(uid, 'OWNER')
         if ck is None:
@@ -289,11 +290,11 @@ class MysApi:
                 use_proxy=True,
             )
         if isinstance(data, Dict):
-            data = cast(SignAward, data['data'])
+            data = cast(MonthlyAward, data['data'])
         return data
 
     async def get_spiral_abyss_info(
-        self, uid, schedule_type='1'
+        self, uid, schedule_type='1', ck: Optional[str] = None
     ) -> Union[AbyssData, int]:
         server_id = RECOGNIZE_SERVER.get(str(uid)[0])
         data = await self.simple_mys_req(
@@ -304,6 +305,7 @@ class MysApi:
                 'role_id': uid,
                 'schedule_type': schedule_type,
             },
+            cookie=ck,
         )
         if isinstance(data, Dict):
             data = cast(AbyssData, data['data'])
@@ -425,7 +427,7 @@ class MysApi:
         uid: str,
         gacha_type: str = '301',
         page: int = 1,
-        end_id: str = '1675598760000062868',
+        end_id: str = '0',
     ) -> Union[int, GachaLog]:
         server_id = 'cn_qd01' if uid[0] == '5' else 'cn_gf01'
         authkey_rawdata = await self.get_authkey_by_cookie(uid)
@@ -579,12 +581,74 @@ class MysApi:
             data = cast(AuthKeyInfo, data['data'])
         return data
 
+    async def get_hk4e_token(self, uid: str):
+        # 获取e_hk4e_token
+        server_id = RECOGNIZE_SERVER.get(uid[0])
+        header = {
+            'Cookie': await self.get_ck(uid, 'OWNER'),
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Referer': 'https://webstatic.mihoyo.com/',
+            'Origin': 'https://webstatic.mihoyo.com',
+        }
+        use_proxy = False
+        data = {
+            'game_biz': 'hk4e_cn',
+            'lang': 'zh-cn',
+            'uid': f'{uid}',
+            'region': f'{server_id}',
+        }
+        if int(str(uid)[0]) < 6:
+            url = _API['HK4E_LOGIN_URL']
+        else:
+            url = _API['HK4E_LOGIN_URL_OS']
+            data['game_biz'] = 'hk4e_global'
+            use_proxy = True
+
+        async with ClientSession() as client:
+            async with client.request(
+                method='POST',
+                url=url,
+                headers=header,
+                json=data,
+                proxy=self.proxy_url if use_proxy else None,
+                timeout=300,
+            ) as resp:
+                raw_data = await resp.json()
+                if 'retcode' in raw_data and raw_data['retcode'] == 0:
+                    _k = resp.cookies['e_hk4e_token'].key
+                    _v = resp.cookies['e_hk4e_token'].value
+                    ck = f'{_k}={_v}'
+                    return ck
+                else:
+                    return None
+
+    async def get_regtime_data(self, uid: str) -> Union[RegTime, int]:
+        hk4e_token = await self.get_hk4e_token(uid)
+        ck_token = await self.get_ck(uid, 'OWNER')
+        params = {
+            'game_biz': 'hk4e_cn',
+            'lang': 'zh-cn',
+            'badge_uid': uid,
+            'badge_region': RECOGNIZE_SERVER.get(uid[0]),
+        }
+        data = await self.simple_mys_req(
+            'REG_TIME',
+            uid,
+            params,
+            {'Cookie': f'{hk4e_token};{ck_token}' if int(uid[0]) <= 5 else {}},
+        )
+        if isinstance(data, Dict):
+            return cast(RegTime, data['data'])
+        else:
+            return data
+
     async def simple_mys_req(
         self,
         URL: str,
         uid: Union[str, bool],
         params: Dict = {},
         header: Dict = {},
+        cookie: Optional[str] = None,
     ) -> Union[Dict, int]:
         if isinstance(uid, bool):
             is_os = uid
@@ -605,7 +669,9 @@ class MysApi:
                 ex_params if ex_params else f'role_id={uid}&server={server_id}'
             )
         HEADER.update(header)
-        if 'Cookie' not in HEADER and isinstance(uid, str):
+        if cookie is not None:
+            HEADER['Cookie'] = cookie
+        elif 'Cookie' not in HEADER and isinstance(uid, str):
             ck = await self.get_ck(uid)
             if ck is None:
                 return -51

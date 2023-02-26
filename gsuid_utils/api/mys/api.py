@@ -102,7 +102,7 @@ GCG_INFO = f'{NEW_URL}/game_record/app/genshin/api/gcg/basicInfo'
 GCG_INFO_OS = f'{NEW_URL_OS}/game_record/genshin/api/gcg/basicInfo'
 
 # 获取注册时间API 绘忆星辰
-REG_TIME_CN = f'{HK4_URL}/event/e20220928anniversary/game_data?'
+REG_TIME = f'{HK4_URL}/event/e20220928anniversary/game_data?'
 REG_TIME_OS = f'{ACT_URL_OS}/event/e20220928anniversary/game_data?'
 
 # 米游社的API列表

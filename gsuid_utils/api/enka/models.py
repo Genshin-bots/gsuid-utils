@@ -27,7 +27,7 @@ class PlayerInfo(TypedDict):
     towerFloorIndex: int
     towerLevelIndex: int
     showAvatarInfoList: List[ShowAvatarInfoListItem]
-    showNameCardIdList: NotRequired[List[int]]
+    showNameCardIdList: List[int]
     profilePicture: ProfilePicture
 
 
@@ -44,7 +44,7 @@ class ProfilePicture(TypedDict):
 class AvatarInfoListItem(TypedDict):
     avatarId: int
     propMap: dict[str, PropMap]
-    talentIdList: NotRequired[List[int]]
+    talentIdList: List[int]
     fightPropMap: dict[str, float]
     skillDepotId: int
     inherentProudSkillList: List[int]
@@ -55,7 +55,7 @@ class AvatarInfoListItem(TypedDict):
 
 class Equip(TypedDict):
     itemId: int
-    reliquary: NotRequired[Reliquary]
+    reliquary: Reliquary
     weapon: Weapon
     flat: Flat
 
@@ -63,11 +63,11 @@ class Equip(TypedDict):
 class Flat(TypedDict):
     # l10n
     nameTextMapHash: str
-    setNameTextMapHash: NotRequired[str]
+    setNameTextMapHash: str
 
     # artifact
-    reliquaryMainstat: NotRequired[Stat]
-    reliquarySubstats: NotRequired[List[Stat]]
+    reliquaryMainstat: Stat
+    reliquarySubstats: List[Stat]
     equipType: Literal[
         "EQUIP_BRACER",
         "EQUIP_NECKLACE",
@@ -77,7 +77,7 @@ class Flat(TypedDict):
     ]
 
     # weapon
-    weaponStats: NotRequired[List[Stat]]
+    weaponStats: List[Stat]
 
     rankLevel: Literal[3, 4, 5]
     itemType: Literal["ITEM_WEAPON", "ITEM_RELIQUARY"]
@@ -85,8 +85,9 @@ class Flat(TypedDict):
 
 
 class Stat(TypedDict):
-    mainPropId: NotRequired[str]
-    appendPropId: NotRequired[str]
+    mainPropId: str
+    appendPropId: str
+    statName: str
     statValue: float | int
 
 
@@ -105,7 +106,7 @@ class Reliquary(TypedDict):
 class PropMap(TypedDict):
     type: int
     ival: str  # Ignore It!
-    val: NotRequired[str]
+    val: str
 
 
 class FetterInfo(TypedDict):

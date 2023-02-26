@@ -76,7 +76,7 @@ class MihoyoCostume(TypedDict):
 class MihoyoAvatar(TypedDict):
     id: int
     image: str
-    icon: NotRequired[str]
+    icon: str
     '''在api/character接口有'''
     name: str
     element: Literal[
@@ -85,18 +85,18 @@ class MihoyoAvatar(TypedDict):
     fetter: int
     level: int
     rarity: int
-    weapon: NotRequired[MihoyoWeapon]
+    weapon: MihoyoWeapon
     '''在api/character接口有'''
-    reliquaries: NotRequired[List[MihoyoReliquary]]
+    reliquaries: List[MihoyoReliquary]
     '''在api/character接口有'''
-    constellations: NotRequired[List[MihoyoConstellation]]
+    constellations: List[MihoyoConstellation]
     '''在api/character接口有'''
     actived_constellation_num: int
-    costumes: NotRequired[List[MihoyoCostume]]
+    costumes: List[MihoyoCostume]
     '''在api/character接口有'''
-    card_image: NotRequired[str]
+    card_image: str
     '''在api/index接口有'''
-    is_chosen: NotRequired[bool]
+    is_chosen: bool
     '''在api/index接口有'''
 
 
@@ -138,7 +138,7 @@ class AbyssFloor(TypedDict):
     settle_time: str
     star: int
     max_star: int
-    levels: List[AbyssFloor]
+    levels: List[AbyssLevel]
 
 
 class AbyssData(TypedDict):

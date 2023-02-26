@@ -1,3 +1,4 @@
+import re
 import asyncio
 from typing import Dict, List, Literal, Optional
 
@@ -162,8 +163,13 @@ class SQLA:
             )
             await self.session.execute(sql)
         else:
+            account_id = re.search(r'account_id=(\d*)', cookie)
+            assert account_id is not None
+            account_id = str(account_id.group(1))
+
             user_data = GsUser(
                 uid=uid,
+                mys_id=account_id,
                 cookie=cookie,
                 stoken=stoken if stoken else None,
                 user_id=user_id,
@@ -203,11 +209,17 @@ class SQLA:
         await self.session.execute(sql)
         await self.session.execute(empty_sql)
 
+    async def mark_invalid(self, cookie: str, mark: str):
+        sql = update(GsUser).where(GsUser.cookie == cookie).values(status=mark)
+        await self.session.execute(sql)
+
     async def user_exists(self, uid: str) -> bool:
         data = await self.select_user_data(uid)
         return True if data else False
 
-    async def update_user_stoken(self, uid: str, stoken: str) -> bool:
+    async def update_user_stoken(
+        self, uid: str, stoken: Optional[str]
+    ) -> bool:
         if await self.user_exists(uid):
             sql = update(GsUser).where(GsUser.uid == uid).values(stoken=stoken)
             await self.session.execute(sql)
@@ -259,6 +271,10 @@ class SQLA:
         data = await self.get_all_user()
         return [_u.cookie for _u in data if _u.cookie and _u.status]
 
+    async def get_all_push_user_list(self) -> List[GsUser]:
+        data = await self.get_all_user()
+        return [user for user in data if user.push_switch != 'off']
+
     async def get_random_cookie(self, uid: str) -> Optional[str]:
         # 有绑定自己CK 并且该CK有效的前提下，优先使用自己CK
         if await self.user_exists(uid) and await self.cookie_validate(uid):
@@ -279,7 +295,8 @@ class SQLA:
         data = await self.session.execute(sql)
         user_list: List[GsUser] = data.scalars().all()
         for user in user_list:
-            if not user.status:
+            if not user.status and user.cookie:
+                await self.insert_cache_data(user.cookie, uid)  # 进入缓存
                 return user.cookie
             continue
         else:
@@ -322,6 +339,14 @@ class SQLA:
         await self.session.execute(sql)
         await self.session.commit()
         return True
+
+    async def change_push_status(
+        self,
+        mode: Literal['coin', 'resin', 'go', 'transform'],
+        uid: str,
+        status: str,
+    ):
+        await self.update_push_data(uid, {f'{mode}_is_push': status})
 
     async def select_push_data(self, uid: str) -> GsPush:
         await self.push_exists(uid)
