@@ -44,7 +44,7 @@ class AmbrPromote(TypedDict):
 
 
 class AmbrUpgrade(TypedDict):
-    prop: AmbrProp
+    prop: List[AmbrProp]
     promote: List[AmbrPromote]
 
 
