@@ -6,34 +6,34 @@ ci:
   autoupdate_commit_msg: ":arrow_up: auto update by pre-commit-ci"
 repos:
   - repo: https://github.com/hadialqattan/pycln
-    rev: v2.1.3
+    rev: v2.6.0
     hooks:
       - id: pycln
 
   - repo: https://github.com/pycqa/isort
-    rev: 5.12.0
+    rev: 9.0.1
     hooks:
       - id: isort
 
-  - repo: https://github.com/psf/black
-    rev: 23.1.0
+  - repo: https://github.com/psf/black-pre-commit-mirror
+    rev: 26.5.1
     hooks:
       - id: black
 
   - repo: https://github.com/pycqa/flake8
-    rev: 6.0.0
+    rev: 7.3.0
     hooks:
       - id: flake8
         additional_dependencies: [Flake8-pyproject]
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v6.0.0
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
 
   - repo: https://github.com/python-poetry/poetry
-    rev: 1.4.0
+    rev: 2.4.1
     hooks:
       - id: poetry-check
       # - id: poetry-export

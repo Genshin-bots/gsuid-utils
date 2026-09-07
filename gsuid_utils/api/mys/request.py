@@ -1,6 +1,7 @@
 '''
 米游社 API 请求模块。
 '''
+
 from __future__ import annotations
 
 import copy
@@ -74,22 +75,18 @@ class MysApi:
     proxy_url: Optional[str] = None
 
     @abstractmethod
-    async def _upass(self, header: Dict):
-        ...
+    async def _upass(self, header: Dict): ...
 
     @abstractmethod
-    async def _pass(self, gt: str, ch: str, header: Dict):
-        ...
+    async def _pass(self, gt: str, ch: str, header: Dict): ...
 
     @abstractmethod
     async def get_ck(
         self, uid: str, mode: Literal['OWNER', 'RANDOM'] = 'RANDOM'
-    ) -> Optional[str]:
-        ...
+    ) -> Optional[str]: ...
 
     @abstractmethod
-    async def get_stoken(self, uid: str) -> Optional[str]:
-        ...
+    async def get_stoken(self, uid: str) -> Optional[str]: ...
 
     async def get_upass_link(self, header: Dict) -> Union[int, Dict]:
         header['DS'] = get_ds_token('is_high=false')
