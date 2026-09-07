@@ -117,11 +117,9 @@ if __name__ == '__main__':
     from colorama import Fore, Style
 
     def test_ctg(length: int, *params):
-        print(
-            f'{Fore.GREEN}> running split_ctg(){Style.RESET_ALL}\
+        print(f'{Fore.GREEN}> running split_ctg(){Style.RESET_ALL}\
             \n    length: {length}\
-            \n    texts: {params}'
-        )
+            \n    texts: {params}')
         groups_ = ColorTextGroup(list(params))
         f_ = pformat(split_ctg(groups_, length)).split('\n')
         print(Fore.CYAN, '\t', f_[0], '\n\t'.join(f_[0:]))
