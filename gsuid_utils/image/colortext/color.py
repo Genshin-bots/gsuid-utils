@@ -114,10 +114,8 @@ def check_if_color(color: Union[str, tuple]):
 if __name__ == '__main__':
     red = Color((1, 1, 1))
     print(f'HEX: {red.to.hex}\nHSV: {red.to.hsv}\nRGB: {red.to.rgb}')
-    print(
-        f'rgb(123, 23, -1) \
+    print(f'rgb(123, 23, -1) \
         {check_if_color("rgb(123, 23, -1)")}\
         \n(100, 200, 255): \
-        {check_if_color((100, 200, 256))}'
-    )
+        {check_if_color((100, 200, 256))}')
     print(check_if_color('#ff0000'))
